@@ -25,6 +25,8 @@ Examples
 rack-i18n_routes works like any other Rack middleware component:
 
     # in your server.ru rackup file
+    require 'rack/i18n_routes'
+
     aliases = {
         'articles' => {
             'fra' => 'articles',
