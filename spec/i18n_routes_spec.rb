@@ -25,29 +25,35 @@ TEST_ALIASES = {
 	'paintings' => {
 		'fra' => 'peintures',
 		'spa' => 'pinturas',
+
+		:children => {
+			'gioconda' => {
+				'fra' => 'joconde',
+			}
+		}
 	}
 }
 
+def app(*opts)
+	builder = Rack::Builder.new do
+		use Rack::Lint
+		use Rack::I18nRoutes, *opts
+		use Rack::Lint
+
+		run lambda { |env| [200, {"Content-Type" => "text/plain"}, [""]] }
+	end
+
+	return builder.to_app
+end
+
+def request_with(path, mapping_fn)
+	session = Rack::Test::Session.new(Rack::MockSession.new(app(mapping_fn)))
+        session.request(path)
+
+	return session.last_request
+end
+
 describe Rack::I18nRoutes do
-	def app(*opts)
-		builder = Rack::Builder.new do
-			use Rack::Lint
-			use Rack::I18nRoutes, *opts
-			use Rack::Lint
-
-			run lambda { |env| [200, {"Content-Type" => "text/plain"}, [""]] }
-		end
-
-		return builder.to_app
-	end
-
-	def request_with(path, mapping_fn)
-		session = Rack::Test::Session.new(Rack::MockSession.new(app(mapping_fn)))
-	        session.request(path)
-
-        	return session.last_request
-	end
-
 	context "with an AliasMapping" do
 		let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES) }
 
@@ -109,6 +115,31 @@ describe Rack::I18nRoutes do
 			path = env['PATH_INFO']
 
 			path.should == '/foobar'
+		end
+	end
+end
+
+describe Rack::I18nRoutes::AliasMapping do
+	let(:default_lang) { 'test-lang' }
+	let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES, :default => default_lang) }
+
+	context "with a :default option set" do
+		it "returns the default key for normalized paths" do
+			ph, found_langs = mapping.map_with_langs('/paintings/gioconda/')
+
+			found_langs.should == [default_lang]*4
+		end
+
+		it "returns the non-default key when set" do
+			ph, found_langs = mapping.map_with_langs('/articulos/la-victoire/')
+
+			found_langs.should == [default_lang, 'spa', 'fra', default_lang]
+		end
+
+		it "returns the default key for unknown paths" do
+			ph, found_langs = mapping.map_with_langs('/articulos/fancy/')
+
+			found_langs.should == [default_lang, 'spa', default_lang, default_lang]
 		end
 	end
 end

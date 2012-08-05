@@ -76,24 +76,38 @@ class Rack::I18nRoutes::AliasMapping
 	# 	use Rack::I18nRoutes, MAPPING
 	#
 	# @param [Hash] aliases the aliases
+	# @param [Hash] opts extra options for the mapping
+	# @option opts [Foo] :default the language key associated with the
+	#                             normalized paths
 
-	def initialize(aliases)
+	def initialize(aliases, opts = {})
 		@aliases = aliases
+		@default_lang = opts[:default]
 	end
 
 	def map(path)
+		normalized_path, found_langs = map_with_langs(path)
+
+		return normalized_path
+	end
+
+	def map_with_langs(path)
 		orig_pieces = path.split('/')
+
 		normalized_pieces = []
+		found_langs = []
 
 		normalized_pieces << orig_pieces.shift
+		found_langs << @default_lang
 
 		aliases = @aliases
 
 		orig_pieces.each do |orig_piece|
-			normalized = normalization_for(orig_piece, aliases)
+			normalized, lang = normalization_for(orig_piece, aliases)
 			replacement = (normalized || orig_piece)
 
 			normalized_pieces << replacement
+			found_langs << lang
 
 			if !aliases.nil?
 				subaliases = aliases[replacement]
@@ -103,28 +117,34 @@ class Rack::I18nRoutes::AliasMapping
 
 		if path.end_with?('/')
 			normalized_pieces << ""
+			found_langs << @default_lang
 		end
 
-		return normalized_pieces.join('/')
+		normalized_path = normalized_pieces.join('/')
+
+		return normalized_path, found_langs
 	end
 
 	def normalization_for(piece, aliases)
 		if aliases.nil?
-			return nil
+			return nil, @default_lang
 		end
 
 		entities = aliases.keys
 		entities.each do |entity|
 			if piece == entity
-				return entity
+				return entity, @default_lang
 			end
 
 			subentities = aliases[entity].values.reject { |e| e.is_a? Hash }
-			if subentities.any? { |subentity| Array(subentity).any? { |sube| piece == sube } }
-				return entity
+			subentity = subentities.find { |s| Array(s).any? { |sube| piece == sube } }
+			if !subentity.nil?
+				return entity, aliases[entity].index(subentity)
 			end
 		end
 
-		return nil
+		# the piece is not present in the aliases
+
+		return nil, @default_lang
 	end
 end

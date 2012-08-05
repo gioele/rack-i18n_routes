@@ -46,15 +46,24 @@ class Rack::I18nRoutes::AliasMappingUpdater
 	#
 	# @param [Proc] new_aliases_fn a parameter-less function that returns
 	#                              the new aliases
+	# @param [Hash] opts the options to be passed to the underlying
+	#                    AliasMapping object
 
-	def initialize(new_aliases_fn)
+	def initialize(new_aliases_fn, opts = {})
 		@new_aliases_fn = new_aliases_fn
+		@opts = opts
 	end
 
 	def map(path)
-		aliases = @new_aliases_fn[]
-		alias_mapping = Rack::I18nRoutes::AliasMapping.new(aliases)
+		normalized_path, found_langs = map_with_langs(path)
 
-		return alias_mapping.map(path)
+		return normalized_path
+	end
+
+	def map_with_langs(path)
+		aliases = @new_aliases_fn[]
+		alias_mapping = Rack::I18nRoutes::AliasMapping.new(aliases, @opts)
+
+		return alias_mapping.map_with_langs(path)
 	end
 end
