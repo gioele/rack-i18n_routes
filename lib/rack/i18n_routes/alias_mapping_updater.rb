@@ -54,11 +54,15 @@ class Rack::I18nRoutes::AliasMappingUpdater
 		@opts = opts
 	end
 
+	# @return [String]
+
 	def map(path)
 		normalized_path, found_langs = map_with_langs(path)
 
 		return normalized_path
 	end
+
+	# @return [(String, Array<Object>)]
 
 	def map_with_langs(path)
 		aliases = @new_aliases_fn[]

@@ -85,11 +85,15 @@ class Rack::I18nRoutes::AliasMapping
 		@default_lang = opts[:default]
 	end
 
+	# @return [String]
+
 	def map(path)
 		normalized_path, found_langs = map_with_langs(path)
 
 		return normalized_path
 	end
+
+	# @return [(String, Array<Object>)]
 
 	def map_with_langs(path)
 		orig_pieces = path.split('/')
@@ -124,6 +128,8 @@ class Rack::I18nRoutes::AliasMapping
 
 		return normalized_path, found_langs
 	end
+
+	# @return [(String, Object)]
 
 	def normalization_for(piece, aliases)
 		if aliases.nil?
