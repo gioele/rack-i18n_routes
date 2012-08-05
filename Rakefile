@@ -16,7 +16,7 @@ Bones {
 	email    'gioele@svario.it'
 	url      'https://github.com/gioele/rack-i18n_routes'
 
-	version  '0.2.dev'
+	version  '0.2'
 
 	ignore_file  '.gitignore'
 
