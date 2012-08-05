@@ -102,7 +102,6 @@ class Rack::I18nRoutes::AliasMapping
 		found_langs = []
 
 		normalized_pieces << orig_pieces.shift
-		found_langs << @default_lang
 
 		aliases = @aliases
 
@@ -121,7 +120,6 @@ class Rack::I18nRoutes::AliasMapping
 
 		if path.end_with?('/')
 			normalized_pieces << ""
-			found_langs << @default_lang
 		end
 
 		normalized_path = normalized_pieces.join('/')

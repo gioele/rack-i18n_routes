@@ -127,19 +127,19 @@ describe Rack::I18nRoutes::AliasMapping do
 		it "returns the default key for normalized paths" do
 			ph, found_langs = mapping.map_with_langs('/paintings/gioconda/')
 
-			found_langs.should == [default_lang]*4
+			found_langs.should == [default_lang, default_lang]
 		end
 
 		it "returns the non-default key when set" do
 			ph, found_langs = mapping.map_with_langs('/articulos/la-victoire/')
 
-			found_langs.should == [default_lang, 'spa', 'fra', default_lang]
+			found_langs.should == ['spa', 'fra']
 		end
 
 		it "returns the default key for unknown paths" do
-			ph, found_langs = mapping.map_with_langs('/articulos/fancy/')
+			ph, found_langs = mapping.map_with_langs('/articulos/foobar/')
 
-			found_langs.should == [default_lang, 'spa', default_lang, default_lang]
+			found_langs.should == ['spa', default_lang]
 		end
 	end
 end
