@@ -6,7 +6,47 @@
 
 require 'rack/i18n_routes/alias_mapping'
 
+# An AliasMapping that updates on every `#map` call.
+#
+# To be used as a mapping object for {Rack::I18nRoutes} when the aliases
+# needed by {Rack::I18nRoutes::AliasMapping} cannot be statically generated
+# at middleware buildtime.
+
 class Rack::I18nRoutes::AliasMappingUpdater
+
+	# Creates a new alias-based Mapping object that updates its aliases
+	# on every path normalization.
+	#
+	# @example Update aliases for modified user-generated content
+	#
+	# 	update_fn = Proc.new do
+	# 		aliases = {}
+	#
+	# 		aliases['articles'] => {
+	# 			'ita' => 'articoli',
+	# 			'spa' => 'articulos',
+	# 		}
+	#
+	# 		if @articles.any { |article| article.changed? }
+	# 			@cached_articles_aliases = all_article_aliases()
+	# 		end
+	#
+	# 		aliases['articles'][:children] = @cached_articles_aliases
+	# 	end
+	#
+	# 	MAPPING = Rack::I18nRoutes::AliasMappingUpdater.new(update_fn)
+	# 	use Rack::I18nRoutes, MAPPING
+	#
+	# @example Delegate the aliases generation to another class
+	#
+	# 	update_fn = Proc.new { @translation_mngr.updated_aliases }
+	#
+	# 	MAPPING = Rack::I18nRoutes::AliasMappingUpdater.new(update_fn)
+	# 	use Rack::I18nRoutes, MAPPING
+	#
+	# @param [Proc] new_aliases_fn a parameter-less function that returns
+	#                              the new aliases
+
 	def initialize(new_aliases_fn)
 		@new_aliases_fn = new_aliases_fn
 	end

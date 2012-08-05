@@ -4,7 +4,79 @@
 # for more details.
 
 
+# Describe translated paths as aliases for the normalized ones.
+#
+# To be used as a mapping object for {Rack::I18nRoutes}.
+#
+# If the list of aliases is not known at buildtime, you can use a
+# {Rack::I18nRoutes::AliasMappingUpdater}.
+
 class Rack::I18nRoutes::AliasMapping
+
+	# Create a new alias-based Mapping object.
+	#
+	# The aliases as stored in a hash. Each keys of the hash contain
+	# a normalized path; its value contains another hash that associates
+	# _ids_ to one or more translations. The special id `:children` is
+	# used to specify the aliases of subpaths.
+	#
+	# @example A basic set of aliases
+	#
+	# 	# "articles" is the normalized path; there are three available
+	# 	# translations: an french translation ("articles") and two
+	# 	# spanish translations ("artículos" and "articulos").
+	#
+	# 	'articles' => {
+	# 		'fra' => 'articles',
+	# 		'spa' => ['artículos', 'articulos'],
+	# 	}
+	#
+	# @example A set of aliases with subpaths
+	#
+	# 	# a special id `:children` is used to specify the aliases of
+	# 	# subpaths
+	#
+	# 	'articles' => {
+	# 		'fra' => 'articles',
+	# 		'spa' => ['artículos', 'articulos'],
+	#
+	# 		:children => {
+	# 			'the-victory' => {
+	# 				'fra' => 'la-victoire',
+	# 				'spa' => 'la-victoria',
+	# 			},
+	# 			'the-block' => {
+	# 				'fra' => 'le-bloc',
+	# 				'spa' => 'el-bloque',
+	# 			},
+	# 		},
+	# 	}
+	#
+	# @example An AliasMapping as mapping object in I18nRoutes
+	#
+	# 	aliases = {
+	# 		'articles' => {
+	# 			'fra' => 'articles',
+	# 			'spa' => ['artículos', 'articulos'],
+	#
+	# 			:children => {
+	# 				'the-victory' => {
+	# 					'fra' => 'la-victoire',
+	# 					'spa' => 'la-victoria',
+	# 				},
+	# 				'the-block' => {
+	# 					'fra' => 'le-bloc',
+	# 					'spa' => 'el-bloque',
+	# 				},
+	# 			},
+	# 		},
+	# 	}
+	#
+	# 	MAPPING = Rack::I18nRoutes::AliasMapping.new(aliases)
+	# 	use Rack::I18nRoutes, MAPPING
+	#
+	# @param [Hash] aliases the aliases
+
 	def initialize(aliases)
 		@aliases = aliases
 	end

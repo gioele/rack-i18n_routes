@@ -50,7 +50,7 @@ rack-i18n_routes works like any other Rack middleware component:
         }
     }
 
-    MAPPING_FN = Rack::I18nRoutes::AliasMapping.new(paths)
+    MAPPING_FN = Rack::I18nRoutes::AliasMapping.new(aliases)
 
     use Rack::I18nRoutes, MAPPING_FN
     run MyApp
