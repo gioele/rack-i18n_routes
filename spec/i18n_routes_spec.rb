@@ -156,22 +156,24 @@ describe Rack::I18nRoutes::AliasMapping do
 	let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES, :default => default_lang) }
 
 	context "with a :default option set" do
-		it "returns the default key for normalized paths" do
-			ph, found_langs = mapping.map_with_langs('/paintings/gioconda/')
+		describe "#analysis" do
+			it "returns the default key for normalized paths" do
+				ph, found_langs = mapping.analysis('/paintings/gioconda/')
 
-			found_langs.should == [default_lang, default_lang]
-		end
+				found_langs.should == [default_lang, default_lang]
+			end
 
-		it "returns the non-default key when set" do
-			ph, found_langs = mapping.map_with_langs('/articulos/la-victoire/')
+			it "returns the non-default key when set" do
+				ph, found_langs = mapping.analysis('/articulos/la-victoire/')
 
-			found_langs.should == ['spa', 'fra']
-		end
+				found_langs.should == ['spa', 'fra']
+			end
 
-		it "returns the default key for unknown paths" do
-			ph, found_langs = mapping.map_with_langs('/articulos/foobar/')
+			it "returns the default key for unknown paths" do
+				ph, found_langs = mapping.analysis('/articulos/foobar/')
 
-			found_langs.should == ['spa', default_lang]
+				found_langs.should == ['spa', default_lang]
+			end
 		end
 	end
 end

@@ -96,17 +96,30 @@ class Rack::I18nRoutes::AliasMapping
 	# @return [(String, Array<Object>)]
 
 	def map_with_langs(path)
+		normalized_pieces, found_langs = analysis(path)
+
+		normalized_path = normalized_pieces.join('/')
+
+		return normalized_path, found_langs
+	end
+
+	# @return [(Array<String>, Array<Object>)]
+
+	def analysis(path, replacement_language = :default)
 		orig_pieces = path.split('/')
 
 		normalized_pieces = []
 		found_langs = []
+
+		# PATH_INFO always starts with / in Rack, so we directly move
+		# the initial empty piece into the normalized ones
 
 		normalized_pieces << orig_pieces.shift
 
 		aliases = @aliases
 
 		orig_pieces.each do |orig_piece|
-			normalized, lang = normalization_for(orig_piece, aliases)
+			normalized, lang = normalization_for(orig_piece, aliases, replacement_language)
 			replacement = (normalized || orig_piece)
 
 			normalized_pieces << replacement
@@ -122,14 +135,12 @@ class Rack::I18nRoutes::AliasMapping
 			normalized_pieces << ""
 		end
 
-		normalized_path = normalized_pieces.join('/')
-
-		return normalized_path, found_langs
+		return normalized_pieces, found_langs
 	end
 
 	# @return [(String, Object)]
 
-	def normalization_for(piece, aliases)
+	def normalization_for(piece, aliases, replacement_language)
 		if aliases.nil?
 			return nil, @default_lang
 		end
