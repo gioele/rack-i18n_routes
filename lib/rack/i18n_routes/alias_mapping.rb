@@ -125,9 +125,10 @@ class Rack::I18nRoutes::AliasMapping
 			normalized_pieces << replacement
 			found_langs << lang
 
-			if !aliases.nil?
-				subaliases = aliases[replacement]
-				aliases = subaliases[:children] unless subaliases.nil?
+			if !aliases.nil? && aliases.has_key?(replacement)
+				aliases = aliases[replacement][:children]
+			else
+				aliases = nil
 			end
 		end
 
