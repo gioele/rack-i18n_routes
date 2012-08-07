@@ -55,12 +55,12 @@ rack-i18n_routes works like any other Rack middleware component:
     use Rack::I18nRoutes, MAPPING_FN
     run MyApp
 
-Request to `/articulos/el-bloque`, `/articles/le-bloc` and even
+Requests to `/articulos/el-bloque`, `/articles/le-bloc` and even
 `/articulos/le-bloc` will all be sent to `/articles/the-block`.
 
 This component deals only with URL normalization. You can use
-`rack-i18n_best_langs` to automatically associate the translated URLs to their
-languages.
+[`rack-i18n_best_langs`](../rack-i18n_best_langs) to automatically associate
+the translated URLs to their languages.
 
 
 Requirements
