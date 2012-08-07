@@ -54,20 +54,33 @@ class Rack::I18nRoutes::AliasMappingUpdater
 		@opts = opts
 	end
 
-	# @return [String]
+	# @see Rack::I18nRoutes::AliasMapping#map
+	# @return (see Rack::I18nRoutes::AliasMapping#map)
 
 	def map(path)
-		normalized_path, found_langs = map_with_langs(path)
-
-		return normalized_path
+		alias_mapping.map(path)
 	end
 
-	# @return [(String, Array<Object>)]
+	# @see Rack::I18nRoutes::AliasMapping#translate_into
+	# @return (see Rack::I18nRoutes::AliasMapping#translate_into)
 
-	def map_with_langs(path)
+	def translate_into(path, language)
+		alias_mapping.translated_into(path, language)
+	end
+
+	# @see Rack::I18nRoutes::AliasMapping#analysis
+	# @return (see Rack::I18nRoutes::AliasMapping#analysis)
+
+	def analysis(path, replacement_language = :default)
+		alias_mapping.analysis(path, replacement_language)
+	end
+
+	# @api private
+
+	def alias_mapping
 		aliases = @new_aliases_fn[]
-		alias_mapping = Rack::I18nRoutes::AliasMapping.new(aliases, @opts)
+		mapping = Rack::I18nRoutes::AliasMapping.new(aliases, @opts)
 
-		return alias_mapping.map_with_langs(path)
+		return mapping
 	end
 end

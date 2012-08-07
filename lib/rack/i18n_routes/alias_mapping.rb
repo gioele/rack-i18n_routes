@@ -88,19 +88,19 @@ class Rack::I18nRoutes::AliasMapping
 	# @return [String]
 
 	def map(path)
-		normalized_path, found_langs = map_with_langs(path)
-
-		return normalized_path
-	end
-
-	# @return [(String, Array<Object>)]
-
-	def map_with_langs(path)
 		normalized_pieces, translated_pieces, found_langs = analysis(path)
 
 		normalized_path = normalized_pieces.join('/')
 
-		return normalized_path, found_langs
+		return normalized_path
+	end
+
+	# @return [String]
+
+	def translate_into(path, language)
+		normalized_pieces, translated_pieces, found_langs = analysis(path, language)
+
+		return translated_pieces.join('/')
 	end
 
 	# @return [(Array<String>, Array<String>, Array<Object>)]
@@ -145,6 +145,8 @@ class Rack::I18nRoutes::AliasMapping
 	end
 
 	# @return [(String, Object)]
+	#
+	# @api private
 
 	def normalization_for(piece, aliases, replacement_language)
 		if aliases.nil?
@@ -172,6 +174,10 @@ class Rack::I18nRoutes::AliasMapping
 		return nil, piece, @default_lang
 	end
 
+	# @return [String]
+	#
+	# @api private
+
 	def piece_translation(piece, aliases, replacement_language)
 		if replacement_language == :default
 			return piece
@@ -184,13 +190,5 @@ class Rack::I18nRoutes::AliasMapping
 		end
 
 		return translated_piece
-	end
-
-	# @return [String]
-
-	def translate_into(path, language)
-		normalized_pieces, translated_pieces, found_langs = analysis(path, language)
-
-		return translated_pieces.join('/')
 	end
 end
