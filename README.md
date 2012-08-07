@@ -18,6 +18,8 @@ Path normalization rewrites the URI (actually the `PATH_INFO`) so that that the
 downstream applications will have to deal with the normalized path only, instead
 of a myriad of localized paths.
 
+The original path is saved in the `rack.i18n_routes_orig_PATH_INFO` variable.
+
 
 Examples
 --------

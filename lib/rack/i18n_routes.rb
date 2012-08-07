@@ -46,6 +46,8 @@ require 'rack'
 
 class Rack::I18nRoutes
 
+	ORIG_PATH_INFO_VARIABLE = 'rack.i18n_routes_orig_PATH_INFO'
+
 	# Set up an i18n routing table.
 	#
 	# @overload initialize(app, url_mapper)
@@ -114,7 +116,7 @@ class Rack::I18nRoutes
 			@path_lookup[path]
 		end
 
-		env['rack.i18n-routes_PATH_INFO'] = path
+		env[ORIG_PATH_INFO_VARIABLE] = path
 		env['PATH_INFO'] = normalized_path
 
 		return @app.call(env)

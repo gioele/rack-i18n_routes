@@ -54,6 +54,24 @@ def request_with(path, mapping_fn)
 end
 
 describe Rack::I18nRoutes do
+	context "with a Proc mapping" do
+		let(:mapping) { Proc.new { |orig_path| orig_path + "_extra" } }
+
+		it "applies the mapping" do
+			env = request_with('/articles', mapping).env
+			path = env['PATH_INFO']
+
+			path.should == '/articles_extra'
+		end
+
+		it "saves the original path" do
+			env = request_with('/articles', mapping).env
+			orig_path = env[Rack::I18nRoutes::ORIG_PATH_INFO_VARIABLE]
+
+			orig_path.should == '/articles'
+		end
+	end
+
 	context "with an AliasMapping" do
 		let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES) }
 
@@ -83,6 +101,13 @@ describe Rack::I18nRoutes do
 			path = env['PATH_INFO']
 
 			path.should == '/foobar'
+		end
+
+		it "saves the original path" do
+			env = request_with('/articulos/le-bloc', mapping).env
+			orig_path = env[Rack::I18nRoutes::ORIG_PATH_INFO_VARIABLE]
+
+			orig_path.should == '/articulos/le-bloc'
 		end
 	end
 
@@ -115,6 +140,13 @@ describe Rack::I18nRoutes do
 			path = env['PATH_INFO']
 
 			path.should == '/foobar'
+		end
+
+		it "saves the original path" do
+			env = request_with('/articulos/le-bloc', mapping).env
+			orig_path = env[Rack::I18nRoutes::ORIG_PATH_INFO_VARIABLE]
+
+			orig_path.should == '/articulos/le-bloc'
 		end
 	end
 end
