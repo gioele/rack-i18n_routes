@@ -96,33 +96,37 @@ class Rack::I18nRoutes::AliasMapping
 	# @return [(String, Array<Object>)]
 
 	def map_with_langs(path)
-		normalized_pieces, found_langs = analysis(path)
+		normalized_pieces, translated_pieces, found_langs = analysis(path)
 
 		normalized_path = normalized_pieces.join('/')
 
 		return normalized_path, found_langs
 	end
 
-	# @return [(Array<String>, Array<Object>)]
+	# @return [(Array<String>, Array<String>, Array<Object>)]
 
 	def analysis(path, replacement_language = :default)
 		orig_pieces = path.split('/')
 
 		normalized_pieces = []
+		translated_pieces = []
 		found_langs = []
 
 		# PATH_INFO always starts with / in Rack, so we directly move
 		# the initial empty piece into the normalized ones
 
-		normalized_pieces << orig_pieces.shift
+		pre_slash = orig_pieces.shift
+		normalized_pieces << pre_slash
+		translated_pieces << pre_slash
 
 		aliases = @aliases
 
 		orig_pieces.each do |orig_piece|
-			normalized, lang = normalization_for(orig_piece, aliases, replacement_language)
+			normalized, translation, lang = normalization_for(orig_piece, aliases, replacement_language)
 			replacement = (normalized || orig_piece)
 
 			normalized_pieces << replacement
+			translated_pieces << translation
 			found_langs << lang
 
 			if !aliases.nil? && aliases.has_key?(replacement)
@@ -134,33 +138,59 @@ class Rack::I18nRoutes::AliasMapping
 
 		if path.end_with?('/')
 			normalized_pieces << ""
+			translated_pieces << ""
 		end
 
-		return normalized_pieces, found_langs
+		return normalized_pieces, translated_pieces, found_langs
 	end
 
 	# @return [(String, Object)]
 
 	def normalization_for(piece, aliases, replacement_language)
 		if aliases.nil?
-			return nil, @default_lang
+			return nil, piece, @default_lang
 		end
 
 		entities = aliases.keys
 		entities.each do |entity|
 			if piece == entity
-				return entity, @default_lang
+				translated_piece = piece_translation(piece, aliases[entity], replacement_language)
+				return entity, translated_piece, @default_lang
 			end
 
 			subentities = aliases[entity].values.reject { |e| e.is_a? Hash }
 			subentity = subentities.find { |s| Array(s).any? { |sube| piece == sube } }
 			if !subentity.nil?
-				return entity, aliases[entity].index(subentity)
+				lang = aliases[entity].index(subentity)
+				translated_piece = piece_translation(piece, aliases[entity], replacement_language)
+				return entity, translated_piece, lang
 			end
 		end
 
 		# the piece is not present in the aliases
 
-		return nil, @default_lang
+		return nil, piece, @default_lang
+	end
+
+	def piece_translation(piece, aliases, replacement_language)
+		if replacement_language == :default
+			return piece
+		end
+
+		translated_piece = aliases[replacement_language]
+
+		if translated_piece.nil?
+			return piece
+		end
+
+		return translated_piece
+	end
+
+	# @return [String]
+
+	def translate_into(path, language)
+		normalized_pieces, translated_pieces, found_langs = analysis(path, language)
+
+		return translated_pieces.join('/')
 	end
 end

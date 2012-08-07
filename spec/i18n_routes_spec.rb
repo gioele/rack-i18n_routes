@@ -158,21 +158,41 @@ describe Rack::I18nRoutes::AliasMapping do
 	context "with a :default option set" do
 		describe "#analysis" do
 			it "returns the default key for normalized paths" do
-				ph, found_langs = mapping.analysis('/paintings/gioconda/')
+				ph, trans, found_langs = mapping.analysis('/paintings/gioconda/')
 
 				found_langs.should == [default_lang, default_lang]
 			end
 
 			it "returns the non-default key when set" do
-				ph, found_langs = mapping.analysis('/articulos/la-victoire/')
+				ph, trans, found_langs = mapping.analysis('/articulos/la-victoire/')
 
 				found_langs.should == ['spa', 'fra']
 			end
 
 			it "returns the default key for unknown paths" do
-				ph, found_langs = mapping.analysis('/articulos/foobar/')
+				ph, trans, found_langs = mapping.analysis('/articulos/foobar/')
 
 				found_langs.should == ['spa', default_lang]
+			end
+		end
+
+		describe "#translate_into" do
+			it "translates a path" do
+				ph = mapping.translate_into('/pinturas/gioconda', 'fra')
+
+				ph.should == '/peintures/joconde'
+			end
+
+			it "translates a path with untranslated pieces" do
+				ph = mapping.translate_into('/paintings/gioconda', 'spa')
+
+				ph.should == '/pinturas/gioconda'
+			end
+
+			it "translates a path with unknown pieces" do
+				ph = mapping.translate_into('/pinturas/foobar/quux', 'fra')
+
+				ph.should == '/peintures/foobar/quux'
 			end
 		end
 	end
