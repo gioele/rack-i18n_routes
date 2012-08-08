@@ -88,7 +88,7 @@ class Rack::I18nRoutes::AliasMapping
 	# @return [String]
 
 	def map(path)
-		normalized_pieces, translated_pieces, found_langs = analysis(path)
+		normalized_pieces, translated_pieces, found_langs = path_analysis(path)
 
 		normalized_path = normalized_pieces.join('/')
 
@@ -98,14 +98,14 @@ class Rack::I18nRoutes::AliasMapping
 	# @return [String]
 
 	def translate_into(path, language)
-		normalized_pieces, translated_pieces, found_langs = analysis(path, language)
+		normalized_pieces, translated_pieces, found_langs = path_analysis(path, language)
 
 		return translated_pieces.join('/')
 	end
 
 	# @return [(Array<String>, Array<String>, Array<Object>)]
 
-	def analysis(path, replacement_language = :default)
+	def path_analysis(path, replacement_language = :default)
 		orig_pieces = path.split('/')
 
 		normalized_pieces = []

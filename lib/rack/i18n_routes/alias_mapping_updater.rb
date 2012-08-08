@@ -71,7 +71,7 @@ class Rack::I18nRoutes::AliasMappingUpdater
 	# @see Rack::I18nRoutes::AliasMapping#analysis
 	# @return (see Rack::I18nRoutes::AliasMapping#analysis)
 
-	def analysis(path, replacement_language = :default)
+	def path_analysis(path, replacement_language = :default)
 		alias_mapping.analysis(path, replacement_language)
 	end
 
