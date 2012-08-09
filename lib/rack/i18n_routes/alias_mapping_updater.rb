@@ -55,21 +55,30 @@ class Rack::I18nRoutes::AliasMappingUpdater
 	end
 
 	# @see Rack::I18nRoutes::AliasMapping#map
+	#
 	# @return (see Rack::I18nRoutes::AliasMapping#map)
+	#
+	# @api private
 
 	def map(path)
 		alias_mapping.map(path)
 	end
 
 	# @see Rack::I18nRoutes::AliasMapping#translate_into
+	#
 	# @return (see Rack::I18nRoutes::AliasMapping#translate_into)
+	#
+	# @api private
 
 	def translate_into(path, language)
 		alias_mapping.translated_into(path, language)
 	end
 
 	# @see Rack::I18nRoutes::AliasMapping#analysis
+	#
 	# @return (see Rack::I18nRoutes::AliasMapping#analysis)
+	#
+	# @api private
 
 	def path_analysis(path, replacement_language = :default)
 		alias_mapping.analysis(path, replacement_language)
