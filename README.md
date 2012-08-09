@@ -6,7 +6,7 @@ that have been translated into untranslated or canonical URL.
 
 If you manage a site that has content many languages and also localized URLs,
 you will find `rack-i18n_routes` very useful, especially when used in
-conjunction with `rack-i18n_best_langs`.
+conjunction with [`rack-i18n_best_langs`](https://github.com/gioele/rack-i18n_best_langs).
 
 Differently from other similar Rack middleware components,
 `rack-i18n_routes` focuses only on path translation/normalization and does not
@@ -65,8 +65,9 @@ Requests to `/articulos/el-bloque`, `/articles/le-bloc` and even
 `/articulos/le-bloc` will all be sent to `/articles/the-block`.
 
 This component deals only with URL normalization. You can use
-[`rack-i18n_best_langs`](../rack-i18n_best_langs) to automatically associate
-the translated URLs to their languages.
+[`rack-i18n_best_langs`](https://github.com/gioele/rack-i18n_best_langs)
+([documentation](http://rubydoc.info/gems/rack-i18n_best_langs)) to
+automatically associate the translated URLs to their languages.
 
 
 Requirements
