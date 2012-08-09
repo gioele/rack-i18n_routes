@@ -183,12 +183,12 @@ class Rack::I18nRoutes::AliasMapping
 			return piece
 		end
 
-		translated_piece = aliases[replacement_language]
+		translated_pieces = Array(aliases[replacement_language])
 
-		if translated_piece.nil?
+		if translated_pieces.empty?
 			return piece
 		end
 
-		return translated_piece
+		return translated_pieces.first
 	end
 end

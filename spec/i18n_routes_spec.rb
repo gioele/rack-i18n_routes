@@ -28,7 +28,7 @@ TEST_ALIASES = {
 
 		:children => {
 			'gioconda' => {
-				'fra' => 'joconde',
+				'fra' => ['joconde', 'la-joconde'],
 			}
 		}
 	}
