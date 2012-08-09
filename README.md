@@ -8,6 +8,10 @@ If you manage a site that has content many languages and also localized URLs,
 you will find `rack-i18n_routes` very useful, especially when used in
 conjunction with `rack-i18n_best_langs`.
 
+Differently from other similar Rack middleware components,
+`rack-i18n_routes` focuses only on path translation/normalization and does not
+require Rails or the `i18n` gem.
+
 
 Features
 --------
