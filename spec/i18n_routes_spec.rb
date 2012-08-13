@@ -152,10 +152,10 @@ describe Rack::I18nRoutes do
 end
 
 describe Rack::I18nRoutes::AliasMapping do
-	let(:default_lang) { 'test-lang' }
-	let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES, :default => default_lang) }
-
 	context "with a :default option set" do
+		let(:default_lang) { 'test-lang' }
+		let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES, :default => default_lang) }
+
 		describe "#path_analysis" do
 			it "returns the default key for normalized paths" do
 				ph, trans, found_langs = mapping.path_analysis('/paintings/gioconda/')
