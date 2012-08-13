@@ -23,7 +23,7 @@ class Rack::I18nRoutes::AliasMapping
 	# @example A basic set of aliases
 	#
 	# 	# "articles" is the normalized path; there are three available
-	# 	# translations: an french translation ("articles") and two
+	# 	# translations: a french translation ("articles") and two
 	# 	# spanish translations ("artículos" and "articulos").
 	#
 	# 	'articles' => {
