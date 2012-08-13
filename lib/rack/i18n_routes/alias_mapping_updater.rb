@@ -74,9 +74,9 @@ class Rack::I18nRoutes::AliasMappingUpdater
 		alias_mapping.translated_into(path, language)
 	end
 
-	# @see Rack::I18nRoutes::AliasMapping#analysis
+	# @see Rack::I18nRoutes::AliasMapping#path_analysis
 	#
-	# @return (see Rack::I18nRoutes::AliasMapping#analysis)
+	# @return (see Rack::I18nRoutes::AliasMapping#path_analysis)
 	#
 	# @api private
 
