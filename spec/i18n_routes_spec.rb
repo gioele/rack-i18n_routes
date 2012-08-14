@@ -245,6 +245,12 @@ describe Rack::I18nRoutes::AliasMapping do
 
 				ph.should == '/peintures/foobar/quux'
 			end
+
+			it "translates a path into the default language" do
+				ph = mapping.translate_into('/pinturas/foobar/quux', default_lang)
+
+				ph.should == '/paintings/foobar/quux'
+			end
 		end
 	end
 end

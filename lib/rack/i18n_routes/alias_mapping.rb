@@ -208,7 +208,7 @@ class Rack::I18nRoutes::AliasMapping
 		entities = aliases.keys
 		entities.each do |entity|
 			if piece == entity
-				translated_piece = piece_translation(piece, aliases[entity], replacement_language)
+				translated_piece = piece_translation(piece, entity, aliases[entity], replacement_language)
 				return entity, translated_piece, @default_lang
 			end
 
@@ -216,7 +216,7 @@ class Rack::I18nRoutes::AliasMapping
 			subentity = subentities.find { |s| Array(s).any? { |sube| piece == sube } }
 			if !subentity.nil?
 				lang = aliases[entity].index(subentity)
-				translated_piece = piece_translation(piece, aliases[entity], replacement_language)
+				translated_piece = piece_translation(piece, entity, aliases[entity], replacement_language)
 				return entity, translated_piece, lang
 			end
 		end
@@ -230,9 +230,9 @@ class Rack::I18nRoutes::AliasMapping
 	#
 	# @api private
 
-	def piece_translation(piece, aliases, replacement_language)
-		if replacement_language == :default
-			return piece
+	def piece_translation(piece, entity, aliases, replacement_language)
+		if replacement_language == :default || replacement_language == @default_lang
+			return entity
 		end
 
 		translated_pieces = Array(aliases[replacement_language])
