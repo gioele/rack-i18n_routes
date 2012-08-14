@@ -159,6 +159,44 @@ describe Rack::I18nRoutes do
 end
 
 describe Rack::I18nRoutes::AliasMapping do
+	context "without a :default option set" do
+		let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES) }
+
+		describe "#all_paths_for" do
+			it "returns all the alias paths for a normalized path" do
+				paths = mapping.all_paths_for('/articles/the-victory')
+
+				paths.sort.should == [
+					'/articles/la-victoire',
+					'/articles/la-victoria',
+					'/articles/the-victory',
+					'/articulos/la-victoire',
+					'/articulos/la-victoria',
+					'/articulos/the-victory',
+					'/artículos/la-victoire',
+					'/artículos/la-victoria',
+					'/artículos/the-victory',
+				]
+			end
+
+			it "does not change unknown paths" do
+				paths = mapping.all_paths_for('/articles/foo/bar')
+
+				paths.sort.should == [
+					'/articles/foo/bar',
+					'/articulos/foo/bar',
+					'/artículos/foo/bar',
+				]
+			end
+
+			it "accepts the root path" do
+				paths = mapping.all_paths_for('/')
+
+				paths.should == ['/']
+			end
+		end
+	end
+
 	context "with a :default option set" do
 		let(:default_lang) { 'test-lang' }
 		let(:mapping) { Rack::I18nRoutes::AliasMapping.new(TEST_ALIASES, :default => default_lang) }

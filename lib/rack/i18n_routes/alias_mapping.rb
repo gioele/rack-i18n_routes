@@ -145,6 +145,54 @@ class Rack::I18nRoutes::AliasMapping
 		return normalized_pieces, translated_pieces, found_langs
 	end
 
+	# @return [Array<String>] all the possible translated paths whose
+	#                         normalization is `normalized_path`
+
+	def all_paths_for(normalized_path)
+		orig_pieces = normalized_path.split('/')
+
+		all_levels = []
+
+		# PATH_INFO always starts with / in Rack, so we directly move
+		# the initial empty piece into the normalized ones
+
+		orig_pieces.shift
+		pre_slash = ""
+		all_levels << [pre_slash]
+
+		aliases = @aliases
+
+		orig_pieces.each do |orig_piece|
+			piece_aliases = aliases[orig_piece] unless aliases.nil?
+
+			if !piece_aliases.nil?
+				translations = piece_aliases.reject { |k,v| k == :children }
+				children = piece_aliases[:children]
+			else
+				translations = {}
+				children = nil
+			end
+
+			local_paths = ([orig_piece] + translations.values).flatten
+			local_paths.uniq!
+
+			all_levels << local_paths
+
+			aliases = children
+		end
+
+		if normalized_path.end_with?('/')
+			all_levels << [""]
+		end
+
+		root_level = all_levels.first
+		levels = all_levels[1..-1]
+
+		all_paths = root_level.product(*levels).map { |ph| ph.join('/') }
+
+		return all_paths
+	end
+
 	# @return [(String, Object)]
 	#
 	# @api private

@@ -84,6 +84,16 @@ class Rack::I18nRoutes::AliasMappingUpdater
 		alias_mapping.analysis(path, replacement_language)
 	end
 
+	# @see Rack::I18nRoutes::AliasMapping#all_paths_for
+	#
+	# @return (see Rack::I18nRoutes::AliasMapping#all_paths_for)
+	#
+	# @api private
+
+	def all_paths_for(normalized_path)
+		alias_mapping.all_paths_for(normalized_path)
+	end
+
 	# @api private
 
 	def alias_mapping
