@@ -106,6 +106,7 @@ class Rack::I18nRoutes::AliasMapping
 	# @return [(Array<String>, Array<String>, Array<Object>)]
 
 	def path_analysis(path, replacement_language = :default)
+		path = path.to_str
 		orig_pieces = path.split('/')
 
 		normalized_pieces = []
@@ -150,6 +151,7 @@ class Rack::I18nRoutes::AliasMapping
 	#                         normalization is `normalized_path`
 
 	def all_paths_for(normalized_path)
+		normalized_path = normalized_path.to_str
 		orig_pieces = normalized_path.split('/')
 
 		all_levels = []
