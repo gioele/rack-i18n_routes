@@ -115,7 +115,8 @@ class Rack::I18nRoutes::AliasMapping
 		# PATH_INFO always starts with / in Rack, so we directly move
 		# the initial empty piece into the normalized ones
 
-		pre_slash = orig_pieces.shift
+		orig_pieces.shift
+		pre_slash = ""
 		normalized_pieces << pre_slash
 		translated_pieces << pre_slash
 

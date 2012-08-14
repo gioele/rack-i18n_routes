@@ -109,6 +109,13 @@ describe Rack::I18nRoutes do
 
 			orig_path.should == '/articulos/le-bloc'
 		end
+
+		it "accepts the root path" do
+			env = request_with('/', mapping).env
+			path = env['PATH_INFO']
+
+			path.should == '/'
+		end
 	end
 
 	context "with an AliasMappingUpdater" do
@@ -173,6 +180,12 @@ describe Rack::I18nRoutes::AliasMapping do
 				ph, trans, found_langs = mapping.path_analysis('/articulos/foobar/')
 
 				found_langs.should == ['spa', default_lang]
+			end
+
+			it "accepts the root path" do
+				ph, trans, found_langs = mapping.path_analysis('/')
+
+				found_langs.should be_empty
 			end
 		end
 
