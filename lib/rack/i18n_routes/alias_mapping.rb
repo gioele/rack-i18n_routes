@@ -130,11 +130,12 @@ class Rack::I18nRoutes::AliasMapping
 			translated_pieces << translation
 			found_langs << lang
 
+			children = nil
 			if !aliases.nil? && aliases.has_key?(replacement)
-				aliases = aliases[replacement][:children]
-			else
-				aliases = nil
+				children = aliases[replacement][:children]
 			end
+
+			aliases = children
 		end
 
 		if path.end_with?('/')
