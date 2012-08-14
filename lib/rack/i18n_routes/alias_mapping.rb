@@ -208,9 +208,9 @@ class Rack::I18nRoutes::AliasMapping
 		normal_names = aliases.keys
 		normal_names.each do |normal_name|
 			translation_info = aliases[normal_name]
-			if piece == normal_name
-				translated_piece = piece_translation(piece, normal_name, translation_info, replacement_language)
+			translated_piece = piece_translation(piece, normal_name, translation_info, replacement_language)
 
+			if piece == normal_name
 				return normal_name, translated_piece, @default_lang
 			end
 
@@ -221,7 +221,6 @@ class Rack::I18nRoutes::AliasMapping
 			end
 
 			lang = translation_info.index(translation)
-			translated_piece = piece_translation(piece, normal_name, translation_info, replacement_language)
 
 			return normal_name, translated_piece, lang
 		end
