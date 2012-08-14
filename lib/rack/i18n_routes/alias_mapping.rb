@@ -205,20 +205,25 @@ class Rack::I18nRoutes::AliasMapping
 			return nil, piece, @default_lang
 		end
 
-		entities = aliases.keys
-		entities.each do |entity|
-			if piece == entity
-				translated_piece = piece_translation(piece, entity, aliases[entity], replacement_language)
-				return entity, translated_piece, @default_lang
+		normal_names = aliases.keys
+		normal_names.each do |normal_name|
+			translation_info = aliases[normal_name]
+			if piece == normal_name
+				translated_piece = piece_translation(piece, normal_name, translation_info, replacement_language)
+
+				return normal_name, translated_piece, @default_lang
 			end
 
-			subentities = aliases[entity].values.reject { |e| e.is_a? Hash }
-			subentity = subentities.find { |s| Array(s).any? { |sube| piece == sube } }
-			if !subentity.nil?
-				lang = aliases[entity].index(subentity)
-				translated_piece = piece_translation(piece, entity, aliases[entity], replacement_language)
-				return entity, translated_piece, lang
+			translations = translation_info.values.reject { |e| e.is_a? Hash }
+			translation = translations.find { |s| Array(s).any? { |trans| piece == trans } }
+			if translation.nil?
+				next
 			end
+
+			lang = translation_info.index(translation)
+			translated_piece = piece_translation(piece, normal_name, translation_info, replacement_language)
+
+			return normal_name, translated_piece, lang
 		end
 
 		# the piece is not present in the aliases
@@ -230,12 +235,12 @@ class Rack::I18nRoutes::AliasMapping
 	#
 	# @api private
 
-	def piece_translation(piece, entity, aliases, replacement_language)
+	def piece_translation(piece, piece_normal_name, translation_info, replacement_language)
 		if replacement_language == :default || replacement_language == @default_lang
-			return entity
+			return piece_normal_name
 		end
 
-		translated_pieces = Array(aliases[replacement_language])
+		translated_pieces = Array(translation_info[replacement_language])
 
 		if translated_pieces.empty?
 			return piece
